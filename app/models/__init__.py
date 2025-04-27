@@ -1,4 +1,4 @@
-from .user import User
-from . file import File
+from .user import UserModel
+from .file import FileModel
 
-__all__ = ['User', 'File']
+__all__ = ['UserModel', 'FileModel']

@@ -1,12 +1,9 @@
-from models.base import BaseModel
-
+from app.models.base import BaseModel
 from app import db
 
-class User(BaseModel):
+class UserModel(BaseModel):
+    __tablename__ = 'user'  # Define explicitamente o nome da tabela
 
-    __tablename__ = 'user'
-
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    password = db.Column(db.String(255), nullable=False)
-    files = db.relationship('File', backref='user', lazy=True)
-    
+    username = db.Column(db.String(50), unique=True, nullable=False)  # Nome de usuário único
+    password = db.Column(db.String(255), nullable=False)  # Senha do usuário (deve ser armazenada de forma segura)
+    files = db.relationship('File', backref='user', lazy=True)  # Relacionamento: um usuário pode ter vários arquivos
