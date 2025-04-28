@@ -1,6 +1,6 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from .config.config import Config
+from app.config.config import Config
 
 db = SQLAlchemy()
 
@@ -12,5 +12,11 @@ def create_app():
     with app.app_context():
         from app.models import UserModel, FileModel  # Importa os modelos dentro do contexto da aplicação
         db.create_all()  # Cria as tabelas no banco de dados se ainda não existirem
+   
+    # Registrando os routes no app
+    from app.auth import auth_bp
+    from app.home import home_bp
+    app.register_blueprint(auth_bp)
+    app.register_blueprint(home_bp)
     
     return app 
