@@ -1,13 +1,8 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-</head>
-<body>
-    <form action="">
-        
-    </form>
+{% include "global/partials/head.html" %}
+<body class="bg-light">
+    {% include "global/partials/header.html" %}
+    {% block main_content %}{% endblock main_content %}
 </body>
 </html>
