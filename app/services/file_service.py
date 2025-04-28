@@ -1,7 +1,5 @@
 from flask import current_app
 
-from app import db
-
 from converters.pdf_from_text import text_to_pdf
 
 from werkzeug.utils import secure_filename
@@ -35,7 +33,7 @@ def save_converted_file(file, user_id=0):
         filesize=os.path.getsize(output_path), # type: ignore
         user_id=user_id # type: ignore
     )
-    
+    from app import db
     db.session.add(file_record)
     db.session.commit()
 
