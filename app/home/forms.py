@@ -1,10 +1,13 @@
 from flask_wtf import FlaskForm
 
-from wtforms import SubmitField, URLField
-
-from wtforms.validators import DataRequired
+from flask_wtf.file import FileField, FileRequired, FileAllowed
 
 class FileForm(FlaskForm):
-    file = URLField('File', validators=[DataRequired()])
+    file = FileField(
+        'Escolha o arquivo', 
+        validators=[
+            FileRequired(),
+            FileAllowed(['txt'], 'Formato não suportado para conversão')
+        ]
+    )
     
-    submit = SubmitField('Converter')
