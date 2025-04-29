@@ -1,5 +1,54 @@
 {% extends "global/base.html" %}
 {% block main_content %}
-<h1>Olá Mundo</h1>
-<a href="{{ url_for('auth.register') }}">cadastro</a>
+<div class="container gap-3 d-flex flex-column justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 500px;">
+        <h2 class="text-center mb-4">Converter Arquivo para PDF</h2>
+        <form method="post" enctype="multipart/form-data">
+            {{ form.hidden_tag() }}
+            <div class="mb-3">
+                {{ form.file.label(class="form-label") }}
+                {{ form.file(class="form-control") }}
+                {% for error in form.file.errors %}
+                    <span class="text-danger">{{ error }}</span>
+                {% endfor %}
+            </div>
+            <div class="d-grid">
+                <button id="submit-btn" type="submit" class="btn btn-primary" disabled>
+                    <span id="btn-text">Enviar e Converter</span>
+                    <span id="btn-spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                </button>
+            </div>            
+        </form>
+    </div>
+    {% if file_record %}
+        <div class="card shadow-sm p-4" style="width: 100%; max-width: 500px;">
+            <div class="card-body">
+                <h5 class="card-title">Arquivo convertido com sucesso!</h5>
+                <p class="card-text">
+                    <strong>Nome:</strong> {{ file_record.filename }}<br>
+                    <strong>Tamanho:</strong> {{ (file_record.filesize / 1024)|round(2) }} KB
+                </p>
+                <a href="{{ url_for('home.download_file', filename=file_record.filename) }}" class="btn btn-success">
+                    Baixar PDF
+                </a>
+            </div>
+        </div>
+    {% endif %}
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const form = document.querySelector("form");
+        const submitBtn = document.getElementById("submit-btn")
+        const btnText = document.getElementById("btn-text")
+        const btnSpinner = document.getElementById("btn-spinner")
+
+        submitBtn.disabled = false
+
+        form.addEventListener("submit", function () {
+            submitBtn.disabled = true
+            btnText.textContent = "Convertendo..."
+            btnSpinner.classList.remove("d-none")
+        })
+    })
+</script>
 {% endblock main_content %}
