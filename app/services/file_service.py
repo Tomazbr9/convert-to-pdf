@@ -1,6 +1,7 @@
 from flask import current_app
 
 from app.converters.pdf_from_text import text_to_pdf
+from app.converters.pdf_from_doc import doc_to_pdf
 
 from werkzeug.utils import secure_filename
 
@@ -45,9 +46,11 @@ def save_converted_file(file, user_id=0) -> FileModel:
     output_path = get_output_path(original_name)
 
     temp_path = save_temp_file(file)
-
+    
     if original_ext == '.txt':
         text_to_pdf(temp_path, output_path)
+    elif original_ext == '.docx' or original_ext == '.doc':
+        doc_to_pdf(temp_path, output_path)
     else:
         raise ValueError('Tipo de arquivo não suportado para conversão')
     
