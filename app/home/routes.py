@@ -1,6 +1,10 @@
 from flask import render_template, request
 from flask import send_from_directory, current_app
 
+from flask_login import current_user
+
+from app.models.file import FileModel
+
 from app.home.forms import FileForm
 from app.home import home_bp
 
@@ -20,8 +24,8 @@ def home():
 
             try:
                 file_record = save_converted_file(file)
-            except ValueError:
-                return 'Arquivo invalido para conversão'
+            except ValueError as e:
+                return f'Arquivo invalido para conversão: {e}'
     
     return render_template('home.html', form=form, file_record=file_record)
             
@@ -29,3 +33,8 @@ def home():
 def download_file(filename):
     media_path = os.path.join(current_app.root_path, 'media')
     return send_from_directory(media_path, filename, as_attachment=True)
+
+@home_bp.route('/my_pdfs')
+def my_pdfs():
+    file_records = FileModel.query.filter_by(user_id=current_user.id).all()
+    return render_template('user_pdfs.html', file_records=file_records)
