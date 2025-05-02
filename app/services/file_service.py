@@ -1,22 +1,24 @@
 from flask import current_app
 
-from app.converters.pdf_from_text import text_to_pdf
-from app.converters.pdf_from_doc import doc_to_pdf
+from flask_login import current_user
 
-from werkzeug.utils import secure_filename
+from app.converters.convert_to_pdf import convert_to_pdf, convert_img_to_pdf
 
 from app.models.file import FileModel
 
-import os
+from werkzeug.utils import secure_filename
 
 from app import db
+
+import os
 
 import tempfile
 
 def get_output_path(original_name: str) -> str:
+    safe_filename = original_name.replace(' ', '_')
     media_path = os.path.join(current_app.root_path, 'media')
     os.makedirs(media_path, exist_ok=True)
-    output_path = os.path.join(media_path, f'{original_name}.pdf')
+    output_path = os.path.join(media_path, f'{safe_filename}.pdf')
     return output_path
 
 def save_temp_file(file):
@@ -38,22 +40,23 @@ def save_file_in_database(output_path: str, user_id: int):
 
     return file_record
 
-def save_converted_file(file, user_id=0) -> FileModel:
+def save_converted_file(file) -> FileModel:
 
     original_name = os.path.splitext(file.filename)[0]
     original_ext = os.path.splitext(file.filename)[1].lower()
-
+    
     output_path = get_output_path(original_name)
 
     temp_path = save_temp_file(file)
     
-    if original_ext == '.txt':
-        text_to_pdf(temp_path, output_path)
-    elif original_ext == '.docx' or original_ext == '.doc':
-        doc_to_pdf(temp_path, output_path)
+    if original_ext in ['.txt', '.docx', '.doc', '.rtf', '.html', '.ods', '.xls', '.xlsx', '.csv', '.odp', '.ppt', '.pptx', '.odg', '.svg']:
+        convert_to_pdf(temp_path, output_path)
+    elif original_ext in ['.png', '.jpg', '.bmp']:
+        convert_img_to_pdf(temp_path, output_path)
     else:
         raise ValueError('Tipo de arquivo não suportado para conversão')
     
-    file_record = save_file_in_database(output_path, user_id)
+    if current_user.is_authenticated:
+        file_record = save_file_in_database(output_path, current_user.id)
 
     return file_record
