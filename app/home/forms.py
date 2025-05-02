@@ -7,7 +7,7 @@ class FileForm(FlaskForm):
         'Escolha o arquivo', 
         validators=[
             FileRequired(),
-            FileAllowed(['txt', 'docx', 'doc'], 'Formato não suportado para conversão')
+            FileAllowed(['txt', 'docx', 'doc', 'rtf', 'html', 'ods', 'xls', 'xlsx', 'csv', 'odp', 'ppt', 'pptx', 'odg', 'svg', 'png', 'jpg', 'bmp'], 'Formato não suportado para conversão')
         ]
     )
     

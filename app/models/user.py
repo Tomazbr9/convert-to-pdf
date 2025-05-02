@@ -1,7 +1,10 @@
 from app.models.base import BaseModel
+
+from flask_login import UserMixin
+
 from app import db
 
-class UserModel(BaseModel):
+class UserModel(BaseModel, UserMixin):
     __tablename__ = 'user'  # Define explicitamente o nome da tabela
 
     username = db.Column(db.String(50), unique=True, nullable=False)  # Nome de usuário único

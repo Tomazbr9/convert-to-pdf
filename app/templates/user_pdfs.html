@@ -1,0 +1,27 @@
+{% extends 'global/base.html' %}
+
+{% block main_content %}
+<div class="container mt-4">
+    <h2>Meus Arquivos PDF</h2>
+    <p>Veja abaixo os PDFs que você converteu:</p>
+    
+    {% if file_records %}
+    <div class="list-group">
+        {% for file in file_records %}
+        <div class="list-group-item list-group-item-action">
+            <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1">{{ file.filename }}</h5>
+                <small>{{ file.upload_date }}</small>
+            </div>
+            <p class="mb-1">Tamanho: {{ file.filesize|filesizeformat }}</p>
+            <a href="{{ url_for('home.download_file', filename=file.filename) }}" class="btn btn-primary btn-sm">Baixar PDF</a>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="alert alert-warning" role="alert">
+        Você ainda não converteu nenhum arquivo PDF.
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
