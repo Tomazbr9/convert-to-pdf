@@ -21,7 +21,7 @@ def register():
 
         new_user = UserModel(
             username=username, # type: ignore
-            password=generate_password_hash(password) # type:ignore
+            password=generate_password_hash(password) #type:ignore # hash para segurança, não armazena senha em texto puro
         )
 
         db.session.add(new_user)
@@ -47,6 +47,7 @@ def login():
         
         user = UserModel.query.filter_by(username=username).first()
 
+        # só autentica se usuário existir e senha estiver correta
         if user and check_password_hash(user.password, password):
             login_user(user)
             return redirect(url_for('home.home'))
@@ -60,7 +61,7 @@ def login():
     )
 
 @auth_bp.route('/logout')
-@login_required
+@login_required  # garante que apenas usuários logados possam acessar logout
 def logout():
     logout_user()
     return redirect(url_for('auth.login'))

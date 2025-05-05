@@ -23,6 +23,7 @@ def home():
             file = form.file.data
 
             try:
+                # chama serviço para salvar o arquivo convertido e registra no banco
                 file_record = save_converted_file(file)
             except ValueError as e:
                 return f'Arquivo invalido para conversão: {e}'
@@ -32,9 +33,11 @@ def home():
 @home_bp.route('/media/<path:filename>')
 def download_file(filename):
     media_path = os.path.join(current_app.root_path, 'media')
+    # serve arquivo como download, buscando da pasta 'media'
     return send_from_directory(media_path, filename, as_attachment=True)
 
 @home_bp.route('/my_pdfs')
 def my_pdfs():
+    # recupera todos os PDFs pertencentes ao usuário logado
     file_records = FileModel.query.filter_by(user_id=current_user.id).all()
     return render_template('user_pdfs.html', file_records=file_records)
